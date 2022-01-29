@@ -1,0 +1,19 @@
+(library
+ (public_name ppx_shared)
+ (name ppx_shared)
+ (modules ppx_shared)
+ (libraries ppxlib))
+
+(library
+ (public_name ppx_shared.server)
+ (name ppx_shared_server)
+ (modules ppx_shared_server)
+ (kind ppx_rewriter)
+ (libraries ppx_shared))
+
+(library
+ (public_name ppx_shared.client)
+ (name ppx_shared_client)
+ (modules ppx_shared_client)
+ (kind ppx_rewriter)
+ (libraries ppx_shared))

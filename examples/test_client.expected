@@ -1,6 +1,7 @@
 let binding: client only
 block client: client only
 expression: CLIENT
+instruction: client
 open: module Client
 open: module Client
 include: module Client

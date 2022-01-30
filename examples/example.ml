@@ -14,6 +14,11 @@ let () = Printf.printf "block server: %s\n%!" server_only]
 let expr = String.uppercase_ascii ("server" [@client "client"])
 let () = Printf.printf "expression: %s\n%!" expr
 
+let () =
+  Printf.printf "instruction: server\n%!" ;%server
+  Printf.printf "instruction: client\n%!" ;%client
+  ()
+
 module%client Client = struct
   let module_name = "module Client"
 end

@@ -8,6 +8,13 @@ let erased_str ~loc ~path:_ payload =
   ; pstr_loc = loc
   }
 
+let erase_str target =
+  Ppxlib.Extension.declare
+    target
+    Ppxlib.Extension.Context.structure_item
+    Ppxlib.Ast_pattern.(pstr __)
+    erased_str
+
 let erased_sig ~loc ~path:_ payload =
   { Ppxlib_ast.Ast.psig_desc =
       Psig_attribute
@@ -18,13 +25,6 @@ let erased_sig ~loc ~path:_ payload =
   ; psig_loc = loc
   }
 
-let erase_str target =
-  Ppxlib.Extension.declare
-    target
-    Ppxlib.Extension.Context.structure_item
-    Ppxlib.Ast_pattern.(pstr __)
-    erased_str
-
 let erase_sig target =
   Ppxlib.Extension.declare
     target
@@ -32,10 +32,19 @@ let erase_sig target =
     Ppxlib.Ast_pattern.(psig __)
     erased_sig
 
+let erased_sequence ~loc:_ ~path:_ _ right = right
+
+let erase_sequence target =
+  Ppxlib.Extension.declare
+    target
+    Ppxlib.Extension.Context.expression
+    Ppxlib.Ast_pattern.(single_expr_payload (pexp_sequence __ __))
+    erased_sequence
+
 let remove target =
   Ppxlib.Driver.register_transformation
     target
-    ~extensions:[ erase_str target; erase_sig target ]
+    ~extensions:[ erase_str target; erase_sig target; erase_sequence target ]
 
 let kept_str ~loc ~path:_ payload =
   match payload with
@@ -52,6 +61,13 @@ let kept_str ~loc ~path:_ payload =
     in
     { pstr_desc; pstr_loc = loc }
 
+let keep_str target =
+  Ppxlib.Extension.declare
+    target
+    Ppxlib.Extension.Context.structure_item
+    Ppxlib.Ast_pattern.(pstr __)
+    kept_str
+
 let kept_sig ~loc ~path:_ payload =
   match payload with
   | [ payload ] -> payload
@@ -67,19 +83,21 @@ let kept_sig ~loc ~path:_ payload =
     in
     { psig_desc; psig_loc = loc }
 
-let keep_str target =
-  Ppxlib.Extension.declare
-    target
-    Ppxlib.Extension.Context.structure_item
-    Ppxlib.Ast_pattern.(pstr __)
-    kept_str
-
 let keep_sig target =
   Ppxlib.Extension.declare
     target
     Ppxlib.Extension.Context.signature_item
     Ppxlib.Ast_pattern.(psig __)
     kept_sig
+
+let kept_expr ~loc:_ ~path:_ expr = expr
+
+let keep_expr target =
+  Ppxlib.Extension.declare
+    target
+    Ppxlib.Extension.Context.expression
+    Ppxlib.Ast_pattern.(single_expr_payload __)
+    kept_expr
 
 let contains_attr target attrs =
   List.find_opt
@@ -138,6 +156,6 @@ let keep target =
   let map_exprs = map_exprs target in
   Ppxlib.Driver.register_transformation
     target
-    ~extensions:[ keep_str target; keep_sig target ]
+    ~extensions:[ keep_str target; keep_sig target; keep_expr target ]
     ~impl:map_exprs#structure
     ~intf:map_exprs#signature

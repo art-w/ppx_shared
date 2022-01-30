@@ -1,6 +1,7 @@
 let binding: server only
 block server: server only
 expression: SERVER
+instruction: server
 open: module Server
 open: module Server
 include: module Server

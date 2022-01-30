@@ -1,0 +1,9 @@
+let binding: server only
+block server: server only
+expression: SERVER
+open: module Server
+open: module Server
+include: module Server
+Sig.server = "server" and "both"
+Alt.value = "server1" and "server2"
+to_string mixed_type: "server"

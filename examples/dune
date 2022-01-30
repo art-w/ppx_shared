@@ -1,0 +1,17 @@
+(test
+ (name test_server)
+ (modules test_server)
+ (preprocess
+  (pps ppx_shared.server)))
+
+(rule
+ (copy example.ml test_server.ml))
+
+(test
+ (name test_client)
+ (modules test_client)
+ (preprocess
+  (pps ppx_shared.client)))
+
+(rule
+ (copy example.ml test_client.ml))

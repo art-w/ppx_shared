@@ -1,0 +1,9 @@
+let binding: client only
+block client: client only
+expression: CLIENT
+open: module Client
+open: module Client
+include: module Client
+Sig.client = "client" and "both"
+Alt.value = "client1" and "client2"
+to_string mixed_type: "client"
